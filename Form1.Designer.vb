@@ -27,7 +27,6 @@ Partial Class Form1
         Me.DataColumn1 = New System.Data.DataColumn()
         Me.DataColumn2 = New System.Data.DataColumn()
         Me.DataColumn3 = New System.Data.DataColumn()
-        Me.Result = New System.Windows.Forms.ListView()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.PickupSelect = New System.Windows.Forms.CheckedListBox()
         Me.onetime = New System.Windows.Forms.Button()
@@ -36,9 +35,10 @@ Partial Class Form1
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.Button2 = New System.Windows.Forms.Button()
         Me.Button3 = New System.Windows.Forms.Button()
+        Me.Button2 = New System.Windows.Forms.Button()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.Result = New System.Windows.Forms.ListBox()
         CType(Me.DataSet1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.SSR, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
@@ -74,19 +74,6 @@ Partial Class Form1
         Me.DataColumn3.ColumnName = "pickup"
         Me.DataColumn3.DataType = GetType(Boolean)
         '
-        'Result
-        '
-        Me.Result.Alignment = System.Windows.Forms.ListViewAlignment.[Default]
-        Me.Result.AutoArrange = False
-        Me.Result.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
-        Me.Result.HideSelection = False
-        Me.Result.Location = New System.Drawing.Point(12, 12)
-        Me.Result.Name = "Result"
-        Me.Result.Size = New System.Drawing.Size(305, 435)
-        Me.Result.TabIndex = 0
-        Me.Result.UseCompatibleStateImageBehavior = False
-        Me.Result.View = System.Windows.Forms.View.Details
-        '
         'GroupBox1
         '
         Me.GroupBox1.Controls.Add(Me.PickupSelect)
@@ -116,12 +103,13 @@ Partial Class Form1
         '
         'tentimes
         '
+        Me.tentimes.BackColor = System.Drawing.Color.Yellow
         Me.tentimes.Location = New System.Drawing.Point(416, 148)
         Me.tentimes.Name = "tentimes"
         Me.tentimes.Size = New System.Drawing.Size(90, 26)
         Me.tentimes.TabIndex = 3
         Me.tentimes.Text = "10연챠 시뮬"
-        Me.tentimes.UseVisualStyleBackColor = True
+        Me.tentimes.UseVisualStyleBackColor = False
         '
         'customtry
         '
@@ -164,24 +152,6 @@ Partial Class Form1
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "저격 전용"
         '
-        'Button1
-        '
-        Me.Button1.Location = New System.Drawing.Point(6, 72)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(177, 25)
-        Me.Button1.TabIndex = 0
-        Me.Button1.Text = "컴플할때까지(천장미고려)"
-        Me.Button1.UseVisualStyleBackColor = True
-        '
-        'Button2
-        '
-        Me.Button2.Location = New System.Drawing.Point(6, 103)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(177, 25)
-        Me.Button2.TabIndex = 1
-        Me.Button2.Text = "컴플할때까지(천장고려)"
-        Me.Button2.UseVisualStyleBackColor = True
-        '
         'Button3
         '
         Me.Button3.Location = New System.Drawing.Point(6, 22)
@@ -191,18 +161,50 @@ Partial Class Form1
         Me.Button3.Text = "체크항목 저격 시뮬 시작"
         Me.Button3.UseVisualStyleBackColor = True
         '
+        'Button2
+        '
+        Me.Button2.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.Button2.Location = New System.Drawing.Point(6, 72)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(177, 25)
+        Me.Button2.TabIndex = 1
+        Me.Button2.Text = "컴플할때까지(천장고려)"
+        Me.Button2.UseVisualStyleBackColor = False
+        '
+        'Button1
+        '
+        Me.Button1.BackColor = System.Drawing.Color.DarkRed
+        Me.Button1.ForeColor = System.Drawing.Color.White
+        Me.Button1.Location = New System.Drawing.Point(6, 103)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(177, 25)
+        Me.Button1.TabIndex = 0
+        Me.Button1.Text = "컴플할때까지(천장미고려)"
+        Me.Button1.UseVisualStyleBackColor = False
+        '
+        'Result
+        '
+        Me.Result.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.Result.FormattingEnabled = True
+        Me.Result.ItemHeight = 12
+        Me.Result.Location = New System.Drawing.Point(12, 12)
+        Me.Result.Name = "Result"
+        Me.Result.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple
+        Me.Result.Size = New System.Drawing.Size(305, 434)
+        Me.Result.TabIndex = 7
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(521, 459)
+        Me.Controls.Add(Me.Result)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.customtry)
         Me.Controls.Add(Me.tentimes)
         Me.Controls.Add(Me.onetime)
         Me.Controls.Add(Me.GroupBox1)
-        Me.Controls.Add(Me.Result)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.MaximizeBox = False
         Me.Name = "Form1"
@@ -221,7 +223,6 @@ Partial Class Form1
     Friend WithEvents DataColumn1 As DataColumn
     Friend WithEvents DataColumn2 As DataColumn
     Friend WithEvents DataColumn3 As DataColumn
-    Friend WithEvents Result As ListView
     Friend WithEvents GroupBox1 As GroupBox
     Friend WithEvents PickupSelect As CheckedListBox
     Friend WithEvents onetime As Button
@@ -233,4 +234,5 @@ Partial Class Form1
     Friend WithEvents Button2 As Button
     Friend WithEvents Button1 As Button
     Friend WithEvents Button3 As Button
+    Friend WithEvents Result As ListBox
 End Class

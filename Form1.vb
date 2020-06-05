@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Imports System.Net
+Imports System.Threading
 
 Public Class Form1
 
@@ -156,16 +157,14 @@ Public Class Form1
     Dim ssrChance As Double = 3.0
     Dim srChance As Double = 12.0
 
+    Dim ssrpickupChance As Double = 0.33
+    Dim srpickupChance As Double = 0.2
+
     Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs)
 
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Dim header As New ColumnHeader()
-        header.Text = ""
-        header.Name = "col1"
-        header.Width = Result.Width
-        Result.Columns.Add(header)
 
         For Each item As String In ssrPickup
             PickupSelect.Items.Add(item)
@@ -227,19 +226,139 @@ Public Class Form1
         End If
         Result.Items.Clear()
 
+        Dim ssrcount As Integer = 0
+        Dim srcount As Integer = 0
+
         Dim rnd As Random = New Random
         For index As Integer = 1 To times
             Dim gacharesult As Double = rnd.Next(0, 10001) / 100
-
             If gacharesult <= ssrChance Then
-                Result.Items.Add("SSR☆" + ssrList.ElementAt(Int(rnd.Next(0, ssrList.Length()))))
-            ElseIf gacharesult <= ssrChance + srChance Then
-                Result.Items.Add("금나비")
+                If gacharesult <= 0.99 Then
+                    Result.Items.Add("픽업SSR★" + ssrPickup.ElementAt(Int(rnd.Next(0, ssrPickup.Length()))))
+                    Result.SetSelected(Result.Items.Count() - 1, True)
+                Else
+                    Result.Items.Add("SSR☆" + ssrList.ElementAt(Int(rnd.Next(0, ssrList.Length()))))
+                End If
+                ssrcount = ssrcount + 1
             Else
-                Result.Items.Add("은나비")
+                If (index Mod 10 = 0) Then
+                    If gacharesult <= (1 - ssrChance) * srpickupChance Then
+                        gacharesult = Int(rnd.Next(0, srPickup.Length()))
+                        Result.Items.Add("픽업SR◇" + srPickup.ElementAt(gacharesult))
+                    Else
+                        Result.Items.Add("금나비")
+                    End If
+                    srcount = srcount + 1
+                ElseIf gacharesult <= ssrChance + srChance Then
+                    If gacharesult <= ssrChance + srChance * srpickupChance Then
+                        gacharesult = Int(rnd.Next(0, srPickup.Length()))
+                        Result.Items.Add("픽업SR◇" + srPickup.ElementAt(gacharesult))
+                    Else
+                        Result.Items.Add("금나비")
+                    End If
+                    srcount = srcount + 1
+                Else
+                    Result.Items.Add("은나비")
+                End If
             End If
-
         Next
+
+        Result.Items.Add("")
+        Result.Items.Add("가챠 종료!")
+        Result.Items.Add("결과: SSR " + ssrcount.ToString + "장, SR " + srcount.ToString + "장")
+        Result.SetSelected(Result.Items.Count() - 1, True)
+
+
+    End Sub
+
+    Private Sub snipe(isComplete As Boolean, isCeiling As Boolean)
+
+        Dim snipelist As List(Of String) = New List(Of String)
+
+        If isComplete Then
+            For index As Integer = 0 To PickupSelect.Items.Count - 1
+                snipelist.Add(PickupSelect.Items(index).ToString)
+            Next
+        Else
+            For index As Integer = 0 To PickupSelect.Items.Count - 1
+                If PickupSelect.GetItemChecked(index) = True Then
+                    snipelist.Add(PickupSelect.Items(index).ToString)
+                End If
+            Next
+
+            If snipelist.Count = 0 Then
+                Return
+            End If
+        End If
+
+        Result.Items.Clear()
+
+        Dim count As Integer = 0
+        Dim ssrcount As Integer = 0
+        Dim srcount As Integer = 0
+        Dim rnd As Random = New Random
+
+        Do While True
+            count = count + 1
+            If count Mod 300 = 0 And isCeiling Then
+                Result.Items.Add("!천장!" + snipelist.ElementAt(0))
+                Result.SetSelected(Result.Items.Count() - 1, True)
+                snipelist.RemoveAt(0)
+            Else
+                Dim gacharesult As Double = rnd.Next(0, 10001) / 100
+                If gacharesult <= ssrChance Then
+                    If gacharesult <= ssrChance * ssrpickupChance Then
+                        gacharesult = Int(rnd.Next(0, ssrPickup.Length()))
+                        Result.Items.Add("픽업SSR★" + ssrPickup.ElementAt(gacharesult))
+                        Result.SetSelected(Result.Items.Count() - 1, True)
+                        If snipelist.Contains(ssrPickup.ElementAt(gacharesult)) Then
+                            snipelist.Remove(ssrPickup.ElementAt(gacharesult))
+                        End If
+                    Else
+                        gacharesult = Int(rnd.Next(0, ssrList.Length()))
+                        Result.Items.Add("SSR☆" + ssrList.ElementAt(Int(rnd.Next(0, ssrList.Length()))))
+                    End If
+                    ssrcount = ssrcount + 1
+                Else
+                    If (count Mod 10 = 0) Then
+                        If gacharesult <= (1 - ssrChance) * srpickupChance Then
+                            gacharesult = Int(rnd.Next(0, srPickup.Length()))
+                            Result.Items.Add("픽업SR◇" + srPickup.ElementAt(gacharesult))
+                            Result.SetSelected(Result.Items.Count() - 1, True)
+                            If snipelist.Contains(srPickup.ElementAt(gacharesult)) Then
+                                snipelist.Remove(srPickup.ElementAt(gacharesult))
+                            End If
+                        Else
+                            Result.Items.Add("금나비")
+                        End If
+                        srcount = srcount + 1
+                    ElseIf gacharesult <= ssrChance + srChance Then
+                        If gacharesult <= ssrChance + srChance * srpickupChance Then
+                            gacharesult = Int(rnd.Next(0, srPickup.Length()))
+                            Result.Items.Add("픽업SR◇" + srPickup.ElementAt(gacharesult))
+                            Result.SetSelected(Result.Items.Count() - 1, True)
+                            If snipelist.Contains(srPickup.ElementAt(gacharesult)) Then
+                                snipelist.Remove(srPickup.ElementAt(gacharesult))
+                            End If
+                        Else
+                            Result.Items.Add("금나비")
+                        End If
+                        srcount = srcount + 1
+                    Else
+                        Result.Items.Add("은나비")
+                    End If
+                End If
+            End If
+            Thread.Sleep(30)
+
+            If snipelist.Count = 0 Then
+                Result.Items.Add("")
+                Result.Items.Add("저격 종료!")
+                Result.Items.Add("결과: " + count.ToString + "회 중 SSR " + ssrcount.ToString + "장, SR " + srcount.ToString + "장")
+                Result.SetSelected(Result.Items.Count() - 1, True)
+                Return
+            End If
+        Loop
 
     End Sub
 
@@ -254,5 +373,17 @@ Public Class Form1
             gacha(Integer.Parse(trynum))
         End If
 
+    End Sub
+
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        snipe(False, True)
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        snipe(True, True)
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        snipe(True, False)
     End Sub
 End Class
