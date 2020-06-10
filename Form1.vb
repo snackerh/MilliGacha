@@ -142,14 +142,14 @@ Public Class Form1
 
     ' 쓰알 픽업
     Dim ssrPickup() As String = {
-        "[엘리건트 링] 시죠 타카네",
-        "[축복에 둘러싸여] 시마바라 엘레나"
+        "[공상문학소녀] 나나오 유리코",
+        "[Bouncing♪Smile!] 오오가미 타마키"
     }
 
     ' 스알 픽업
     Dim srPickup() As String = {
-        "[수줍은 웃음의 나데시코] 에밀리 스튜어트",
-        "[교복 시리즈] 마이하마 아유무"
+        "[밀리클로] 카스가 미라이",
+        "[밀리클로] 줄리아"
         }
 
     Dim allCardList As List(Of String) = New List(Of String)
