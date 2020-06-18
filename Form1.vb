@@ -110,7 +110,9 @@ Public Class Form1
         "[외딴 섬 서스펜스 호러 [메이드]] 키타자와 시호",
         "[가끔은 시소] 나카타니 이쿠",
         "[프라이빗 로드쇼] 미나세 이오리",
-        "[칠흑의 저격수] 줄리아"
+        "[칠흑의 저격수] 줄리아",
+        "[공상문학소녀] 나나오 유리코",
+        "[Bouncing♪Smile!] 오오가미 타마키"		
     }
 
     ' 페스 쓰알 23종
@@ -142,14 +144,14 @@ Public Class Form1
 
     ' 쓰알 픽업
     Dim ssrPickup() As String = {
-        "[공상문학소녀] 나나오 유리코",
-        "[Bouncing♪Smile!] 오오가미 타마키"
+		"[비가 일으킨 기적]키쿠치 마코토",
+		"[파랑새의 보은]토코로 메구미"
     }
 
     ' 스알 픽업
     Dim srPickup() As String = {
-        "[밀리클로] 카스가 미라이",
-        "[밀리클로] 줄리아"
+        "[좋아하는 우산] 후쿠다 노리코",
+        "[밀리클로] 호시이 미키"
         }
 
     Dim allCardList As List(Of String) = New List(Of String)
@@ -246,7 +248,7 @@ Public Class Form1
                         gacharesult = Int(rnd.Next(0, srPickup.Length()))
                         Result.Items.Add("픽업SR◇" + srPickup.ElementAt(gacharesult))
                     Else
-                        Result.Items.Add("금나비")
+                        Result.Items.Add("확정금나비(" + index.ToString + "연째)")
                     End If
                     srcount = srcount + 1
                 ElseIf gacharesult <= ssrChance + srChance Then
@@ -271,7 +273,7 @@ Public Class Form1
 
     End Sub
 
-    Private Sub snipe(isComplete As Boolean, isCeiling As Boolean)
+    Private Sub snipe(isComplete As Boolean, doCeiling As Boolean)
 
         Dim snipelist As List(Of String) = New List(Of String)
 
@@ -295,66 +297,80 @@ Public Class Form1
 
         Dim count As Integer = 0
         Dim ssrcount As Integer = 0
+        Dim ceilcount As Integer = 0
         Dim srcount As Integer = 0
+
+        Dim isceil As Boolean = False
         Dim rnd As Random = New Random
 
         Do While True
-            count = count + 1
-            If count Mod 300 = 0 And isCeiling Then
+            If count > 0 And isceil And doCeiling Then
                 Result.Items.Add("!천장!" + snipelist.ElementAt(0))
                 Result.SetSelected(Result.Items.Count() - 1, True)
                 snipelist.RemoveAt(0)
+                ceilcount = ceilcount + 1
+                isceil = False
             Else
-                Dim gacharesult As Double = rnd.Next(0, 10001) / 100
-                If gacharesult <= ssrChance Then
-                    If gacharesult <= ssrChance * ssrpickupChance Then
-                        gacharesult = Int(rnd.Next(0, ssrPickup.Length()))
-                        Result.Items.Add("픽업SSR★" + ssrPickup.ElementAt(gacharesult))
-                        Result.SetSelected(Result.Items.Count() - 1, True)
-                        If snipelist.Contains(ssrPickup.ElementAt(gacharesult)) Then
-                            snipelist.Remove(ssrPickup.ElementAt(gacharesult))
-                        End If
-                    Else
-                        gacharesult = Int(rnd.Next(0, ssrList.Length()))
-                        Result.Items.Add("SSR☆" + ssrList.ElementAt(Int(rnd.Next(0, ssrList.Length()))))
+                For index As Integer = 0 To 9
+                    count = count + 1
+                    If count Mod 300 = 0 Then
+                        isceil = True
                     End If
-                    ssrcount = ssrcount + 1
-                Else
-                    If (count Mod 10 = 0) Then
-                        If gacharesult <= (1 - ssrChance) * srpickupChance Then
-                            gacharesult = Int(rnd.Next(0, srPickup.Length()))
-                            Result.Items.Add("픽업SR◇" + srPickup.ElementAt(gacharesult))
+                    Dim gacharesult As Double = rnd.Next(0, 10001) / 100
+                    If gacharesult <= ssrChance Then
+                        If gacharesult <= ssrChance * ssrpickupChance Then
+                            gacharesult = Int(rnd.Next(0, ssrPickup.Length()))
+                            Result.Items.Add("픽업SSR★" + ssrPickup.ElementAt(gacharesult))
                             Result.SetSelected(Result.Items.Count() - 1, True)
-                            If snipelist.Contains(srPickup.ElementAt(gacharesult)) Then
-                                snipelist.Remove(srPickup.ElementAt(gacharesult))
+                            If snipelist.Contains(ssrPickup.ElementAt(gacharesult)) Then
+                                snipelist.Remove(ssrPickup.ElementAt(gacharesult))
                             End If
                         Else
-                            Result.Items.Add("금나비")
+                            gacharesult = Int(rnd.Next(0, ssrList.Length()))
+                            Result.Items.Add("SSR☆" + ssrList.ElementAt(Int(rnd.Next(0, ssrList.Length()))))
                         End If
-                        srcount = srcount + 1
-                    ElseIf gacharesult <= ssrChance + srChance Then
-                        If gacharesult <= ssrChance + srChance * srpickupChance Then
-                            gacharesult = Int(rnd.Next(0, srPickup.Length()))
-                            Result.Items.Add("픽업SR◇" + srPickup.ElementAt(gacharesult))
-                            Result.SetSelected(Result.Items.Count() - 1, True)
-                            If snipelist.Contains(srPickup.ElementAt(gacharesult)) Then
-                                snipelist.Remove(srPickup.ElementAt(gacharesult))
-                            End If
-                        Else
-                            Result.Items.Add("금나비")
-                        End If
-                        srcount = srcount + 1
+                        ssrcount = ssrcount + 1
                     Else
-                        Result.Items.Add("은나비")
+                        If (count Mod 10 = 0) Then
+                            If gacharesult <= (1 - ssrChance) * srpickupChance Then
+                                gacharesult = Int(rnd.Next(0, srPickup.Length()))
+                                Result.Items.Add("픽업SR◇" + srPickup.ElementAt(gacharesult))
+                                Result.SetSelected(Result.Items.Count() - 1, True)
+                                If snipelist.Contains(srPickup.ElementAt(gacharesult)) Then
+                                    snipelist.Remove(srPickup.ElementAt(gacharesult))
+                                End If
+                            Else
+                                Result.Items.Add("확정금나비(" + count.ToString + "연째)")
+                            End If
+                            srcount = srcount + 1
+                        ElseIf gacharesult <= ssrChance + srChance Then
+                            If gacharesult <= ssrChance + srChance * srpickupChance Then
+                                gacharesult = Int(rnd.Next(0, srPickup.Length()))
+                                Result.Items.Add("픽업SR◇" + srPickup.ElementAt(gacharesult))
+                                Result.SetSelected(Result.Items.Count() - 1, True)
+                                If snipelist.Contains(srPickup.ElementAt(gacharesult)) Then
+                                    snipelist.Remove(srPickup.ElementAt(gacharesult))
+                                End If
+                            Else
+                                Result.Items.Add("금나비")
+                            End If
+                            srcount = srcount + 1
+                        Else
+                            Result.Items.Add("은나비")
+                        End If
                     End If
-                End If
+                Next
             End If
             Thread.Sleep(30)
 
             If snipelist.Count = 0 Then
                 Result.Items.Add("")
                 Result.Items.Add("저격 종료!")
-                Result.Items.Add("결과: " + count.ToString + "회 중 SSR " + ssrcount.ToString + "장, SR " + srcount.ToString + "장")
+                If ceilcount = 0 Then
+                    Result.Items.Add("결과: " + count.ToString + "회 중 SSR " + ssrcount.ToString + "장, SR " + srcount.ToString + "장")
+                Else
+                    Result.Items.Add("결과: " + count.ToString + "+" + ceilcount.ToString + "회 중 SSR " + ssrcount.ToString + "장, SR " + srcount.ToString + "장")
+                End If
                 Result.SetSelected(Result.Items.Count() - 1, True)
                 Return
             End If
